@@ -1,5 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CV, emptyCV } from '@/data/cvData';
+import { ExportFormat } from '@/types/exportTypes';
+
+// Browser detection for SSR compatibility
+const isBrowser = typeof window !== 'undefined';
 
 // Format date function for display
 export function formatDate(dateString: string): string {
@@ -8,15 +12,16 @@ export function formatDate(dateString: string): string {
   try {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', { 
-      year: 'numeric', 
-      month: 'short'
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     }).format(date);
-  } catch (error) {
+  } catch (e) {
     return dateString;
   }
 }
 
-// Create a new empty CV
+// Create a new CV with default values
 export function createNewCV(userId: string, template = 'Professional'): CV {
   return {
     ...emptyCV,
@@ -24,20 +29,19 @@ export function createNewCV(userId: string, template = 'Professional'): CV {
     userId,
     template,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   };
 }
 
 // Create a slug from text
 export function createSlug(text: string): string {
-  return text
-    .toLowerCase()
+  return text.toLowerCase()
     .replace(/[^\w ]+/g, '')
     .replace(/ +/g, '-');
 }
 
 // Generate PDF file name
-export function generateCVFileName(cv: CV, format = 'pdf'): string {
+export function generateCVFileName(cv: CV, format: ExportFormat | 'txt' = 'pdf'): string {
   const name = cv.personalInfo.firstName && cv.personalInfo.lastName
     ? `${cv.personalInfo.firstName}-${cv.personalInfo.lastName}-CV`
     : 'CV';
@@ -52,15 +56,15 @@ export async function extractTextFromPDF(file: File): Promise<string> {
   // a library like pdf.js to extract text content
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve('Text content extracted from PDF');
-    }, 500);
+      resolve('Sample extracted text content from PDF');
+    }, 1000);
   });
 }
 
-// Parse CV data from extracted text using AI
-export async function parseExtractedText(text: string, userId: string): Promise<Partial<CV>> {
-  // This is a placeholder - in a real implementation, you would send
-  // the extracted text to an AI service to parse CV data
+// Parse extracted text into CV data
+export function parseExtractedText(text: string, userId: string): Partial<CV> {
+  // This is a placeholder - in a real implementation, you would use 
+  // NLP or a dedicated service to parse CV data
   return {
     id: uuidv4(),
     userId,
@@ -77,52 +81,279 @@ export async function parseExtractedText(text: string, userId: string): Promise<
   };
 }
 
-// Download CV as PDF
-export function downloadCV(cv: CV, format = 'pdf'): void {
-  // This is a placeholder - in a real implementation, you would generate
-  // a PDF document and trigger a download
-  
-  // For demonstration purposes, we'll just create a text representation
-  const content = `
-    ${cv.personalInfo.firstName} ${cv.personalInfo.lastName}
-    ${cv.personalInfo.title}
+// Download CV in various formats (PDF, DOCX, JPG)
+export async function downloadCV(cv: CV, format: ExportFormat = 'pdf'): Promise<void> {
+  // Only run in browser environment
+  if (!isBrowser) {
+    console.warn('Cannot download CV in non-browser environment');
+    return;
+  }
+
+  try {
+    // First generate the CV content in HTML format for better styling
+    const cvHtml = generateCVHTML(cv);
     
-    Contact: ${cv.personalInfo.email} | ${cv.personalInfo.phone}
+    // Create a temporary container to render the CV
+    const container = document.createElement('div');
+    container.innerHTML = cvHtml;
+    container.style.width = '8.5in';
+    container.style.padding = '0.5in';
+    container.style.backgroundColor = 'white';
+    container.style.position = 'fixed';
+    container.style.top = '-9999px';
+    document.body.appendChild(container);
     
-    Summary:
-    ${cv.personalInfo.summary}
+    // Process according to the requested format
+    switch(format.toLowerCase()) {
+      case 'pdf':
+        await exportAsPDF(container, cv);
+        break;
+      case 'docx':
+        await exportAsDOCX(container, cv);
+        break;
+      case 'jpg':
+        await exportAsJPG(container, cv);
+        break;
+      default:
+        await exportAsPDF(container, cv);
+    }
     
-    Experience:
-    ${cv.experience.map(exp => `
-      ${exp.position} at ${exp.company}
-      ${formatDate(exp.startDate)} - ${exp.isCurrent ? 'Present' : formatDate(exp.endDate)}
-      ${exp.description}
-    `).join('\n')}
-    
-    Education:
-    ${cv.education.map(edu => `
-      ${edu.degree} in ${edu.field}
-      ${edu.institution}
-      ${formatDate(edu.startDate)} - ${formatDate(edu.endDate)}
-    `).join('\n')}
-    
-    Skills:
-    ${cv.skills.map(skill => skill.name).join(', ')}
+    // Clean up the temporary container after a delay
+    setTimeout(() => {
+      document.body.removeChild(container);
+    }, 1000);
+  } catch (error) {
+    console.error('Error downloading CV:', error);
+    throw error;
+  }
+}
+
+// Generate HTML representation of the CV
+function generateCVHTML(cv: CV): string {
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <h1 style="margin-bottom: 5px;">${cv.personalInfo.firstName} ${cv.personalInfo.lastName}</h1>
+        <h2 style="margin-top: 0; color: #555;">${cv.personalInfo.title}</h2>
+        <p>${cv.personalInfo.email} | ${cv.personalInfo.phone}</p>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Summary</h3>
+        <p>${cv.personalInfo.summary}</p>
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Experience</h3>
+        ${cv.experience.map(exp => `
+          <div style="margin-bottom: 15px;">
+            <h4 style="margin-bottom: 5px;">${exp.position} at ${exp.company}</h4>
+            <p style="margin-top: 0; color: #555;">${formatDate(exp.startDate)} - ${exp.isCurrent ? 'Present' : formatDate(exp.endDate)}</p>
+            <p>${exp.description}</p>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div style="margin-bottom: 20px;">
+        <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Education</h3>
+        ${cv.education.map(edu => `
+          <div style="margin-bottom: 15px;">
+            <h4 style="margin-bottom: 5px;">${edu.degree} in ${edu.field}</h4>
+            <p style="margin-top: 0;">${edu.institution}</p>
+            <p style="margin-top: 0; color: #555;">${formatDate(edu.startDate)} - ${formatDate(edu.endDate)}</p>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div>
+        <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Skills</h3>
+        <p>${cv.skills.map(skill => skill.name).join(', ')}</p>
+      </div>
+      
+      ${cv.languages && cv.languages.length > 0 ? `
+      <div>
+        <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Languages</h3>
+        <ul>
+          ${cv.languages.map(lang => `
+            <li>${lang.name} - ${lang.proficiency}</li>
+          `).join('')}
+        </ul>
+      </div>
+      ` : ''}
+      
+      ${cv.references && cv.references.length > 0 ? `
+      <div>
+        <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">References</h3>
+        ${cv.references.map(ref => `
+          <div style="margin-bottom: 15px;">
+            <h4 style="margin-bottom: 5px;">${ref.name}</h4>
+            <p style="margin-top: 0;">${ref.relation || 'Reference'}</p>
+            <p style="margin-top: 0;">${ref.email} | ${ref.phone}</p>
+          </div>
+        `).join('')}
+      </div>
+      ` : ''}
+    </div>
   `;
+}
+
+// Export as PDF
+async function exportAsPDF(container: HTMLElement, cv: CV): Promise<void> {
+  if (!isBrowser) return;
   
-  const blob = new Blob([content], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = generateCVFileName(cv, format === 'pdf' ? 'txt' : format);
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  try {
+    // Dynamically import html2pdf
+    const html2pdfModule = await import('html2pdf.js');
+    const html2pdf = html2pdfModule.default;
+    
+    const options = {
+      margin: [0.5, 0.5, 0.5, 0.5],
+      filename: generateCVFileName(cv, 'pdf'),
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    
+    await html2pdf().from(container).set(options).save();
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    throw error;
+  }
+}
+
+// Export as DOCX
+async function exportAsDOCX(container: HTMLElement, cv: CV): Promise<void> {
+  if (!isBrowser) return;
+  
+  try {
+    // Dynamically import docx and file-saver
+    const docxModule = await import('docx');
+    const { Document, Packer, Paragraph, HeadingLevel, AlignmentType } = docxModule;
+    const fileSaverModule = await import('file-saver');
+    const { saveAs } = fileSaverModule;
+    
+    // Create a new document
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [
+            new Paragraph({
+              text: `${cv.personalInfo.firstName} ${cv.personalInfo.lastName}`,
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER
+            }),
+            
+            new Paragraph({
+              text: cv.personalInfo.title,
+              heading: HeadingLevel.HEADING_2,
+              alignment: AlignmentType.CENTER
+            }),
+            
+            new Paragraph({
+              text: `${cv.personalInfo.email} | ${cv.personalInfo.phone}`,
+              alignment: AlignmentType.CENTER,
+              spacing: { after: 400 }
+            }),
+            
+            new Paragraph({
+              text: 'Summary',
+              heading: HeadingLevel.HEADING_3
+            }),
+            
+            new Paragraph({ text: cv.personalInfo.summary, spacing: { after: 400 } }),
+            
+            new Paragraph({
+              text: 'Experience',
+              heading: HeadingLevel.HEADING_3
+            }),
+            
+            ...cv.experience.flatMap(exp => [
+              new Paragraph({ 
+                text: `${exp.position} at ${exp.company}`,
+                heading: HeadingLevel.HEADING_4
+              }),
+              new Paragraph({ 
+                text: `${formatDate(exp.startDate)} - ${exp.isCurrent ? 'Present' : formatDate(exp.endDate)}`,
+                spacing: { after: 200 }
+              }),
+              new Paragraph({ text: exp.description, spacing: { after: 400 } })
+            ]),
+            
+            new Paragraph({
+              text: 'Education',
+              heading: HeadingLevel.HEADING_3
+            }),
+            
+            ...cv.education.flatMap(edu => [
+              new Paragraph({ 
+                text: `${edu.degree} in ${edu.field}`,
+                heading: HeadingLevel.HEADING_4
+              }),
+              new Paragraph({ text: edu.institution }),
+              new Paragraph({ 
+                text: `${formatDate(edu.startDate)} - ${formatDate(edu.endDate)}`, 
+                spacing: { after: 400 }
+              })
+            ]),
+            
+            new Paragraph({
+              text: 'Skills',
+              heading: HeadingLevel.HEADING_3
+            }),
+            
+            new Paragraph({ text: cv.skills.map(skill => skill.name).join(', ') })
+          ]
+        }
+      ]
+    });
+
+    // Generate and save the document
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, generateCVFileName(cv, 'docx'));
+  } catch (error) {
+    console.error('Error generating DOCX:', error);
+    throw error;
+  }
+}
+
+// Export as JPG
+async function exportAsJPG(container: HTMLElement, cv: CV): Promise<void> {
+  if (!isBrowser) return;
+  
+  try {
+    // Dynamically import html2canvas and file-saver
+    const html2canvasModule = await import('html2canvas');
+    const html2canvas = html2canvasModule.default;
+    const fileSaverModule = await import('file-saver');
+    const { saveAs } = fileSaverModule;
+    
+    const canvas = await html2canvas(container, { 
+      scale: 2, 
+      logging: false, 
+      useCORS: true 
+    });
+    
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(blob => {
+        if (blob) {
+          saveAs(blob, generateCVFileName(cv, 'jpg'));
+          resolve();
+        } else {
+          reject(new Error('Failed to create image blob'));
+        }
+      }, 'image/jpeg', 0.95);
+    });
+  } catch (error) {
+    console.error('Error generating JPG:', error);
+    throw error;
+  }
 }
 
 // Share CV via email
 export function shareCV(cv: CV, email: string): void {
+  if (!isBrowser) return;
+  
   // This is a placeholder - in a real implementation, you would 
   // implement sharing functionality with the provided email
   

@@ -10,6 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import { createNewCV } from '@/lib/cvUtils';
 import { downloadCV } from '@/lib/cvUtils';
 import { CV, sampleCV } from '@/data/cvData';
+import { ExportFormat } from '@/types/exportTypes';
 
 enum BuilderMode {
   LIST = 'list',
@@ -82,7 +83,6 @@ export default function Builder() {
     // In a real implementation, this would delete from the database
     setMyCVs(myCVs.filter(cv => cv.id !== id));
   };
-
   // View a CV
   const handleViewCV = (cv: CV) => {
     setCurrentCV(cv);
@@ -90,8 +90,13 @@ export default function Builder() {
   };
 
   // Export a CV
-  const handleExportCV = (cv: CV, format: string) => {
-    downloadCV(cv, format);
+  const handleExportCV = async (cv: CV, format: ExportFormat): Promise<void> => {
+    try {
+      await downloadCV(cv, format);
+    } catch (error) {
+      console.error('Error exporting CV:', error);
+      alert('There was an error exporting your CV. Please try again.');
+    }
   };
 
   // Handle upload complete
@@ -198,13 +203,11 @@ export default function Builder() {
             }}
             onExport={handleExportCV}
           />
-        )}
-
-        {mode === BuilderMode.PREVIEW && currentCV && (
+        )}        {mode === BuilderMode.PREVIEW && currentCV && (
           <CVPreview 
             cv={currentCV}
             onBack={() => setMode(BuilderMode.LIST)}
-            onExport={(format) => handleExportCV(currentCV, format)}
+            onExport={async (format: ExportFormat) => handleExportCV(currentCV, format)}
           />
         )}
 

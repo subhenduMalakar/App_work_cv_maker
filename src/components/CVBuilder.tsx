@@ -6,6 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   Plus, 
@@ -23,16 +29,18 @@ import {
   BookOpen,
   ChevronRight,
   Settings,
-  XCircle
+  XCircle,
+  FileType
 } from 'lucide-react';
 import { CV, Experience, Education, Skill, Language, Certificate, Project, Reference } from '@/data/cvData';
+import { ExportFormat } from '@/types/exportTypes';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface CVBuilderProps {
   cv: CV;
   onSave: (cv: CV) => void;
   onCancel: () => void;
-  onExport: (cv: CV, format: string) => void;
+  onExport: (cv: CV, format: ExportFormat) => Promise<void>;
 }
 
 export const CVBuilder: React.FC<CVBuilderProps> = ({ 
@@ -353,13 +361,26 @@ export const CVBuilder: React.FC<CVBuilderProps> = ({
               {cv.name || 'Untitled CV'}
             </h1>
           </div>
-          
-          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
             {!isMobile && (
-              <Button variant="outline" size="sm" onClick={() => onExport(cv, 'pdf')}>
-                <Download className="h-4 w-4 mr-2" />
-                <span>Export PDF</span>
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Download className="h-4 w-4 mr-2" />
+                    <span>Export</span>
+                  </Button>
+                </DropdownMenuTrigger>                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => onExport(cv, 'pdf')}>
+                    Export as PDF
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onExport(cv, 'docx')}>
+                    Export as DOCX
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onExport(cv, 'jpg')}>
+                    Export as JPG
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
             <Button size="sm" onClick={handleSave}>
               <Save className="h-4 w-4 mr-2" />
@@ -398,16 +419,25 @@ export const CVBuilder: React.FC<CVBuilderProps> = ({
             className="fixed right-0 top-0 h-full w-4/5 max-w-xs bg-white dark:bg-gray-900 shadow-xl z-50 overflow-y-auto"
           >
             <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="font-semibold">Menu</h2>
-              <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}>
+              <h2 className="font-semibold">Menu</h2>              <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(false)}>
                 <XCircle className="h-5 w-5" />
               </Button>
             </div>
-            <div className="p-4 space-y-4">
-              <Button variant="outline" className="w-full justify-start" onClick={() => onExport(cv, 'pdf')}>
-                <Download className="h-4 w-4 mr-2" />
-                Export PDF
-              </Button>
+            <div className="p-4 space-y-4">              <h3 className="text-sm font-medium mb-2">Export Options</h3>
+              <div className="space-y-2">
+                <Button variant="outline" className="w-full justify-start" onClick={() => onExport(cv, 'pdf')}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export as PDF
+                </Button>
+                <Button variant="outline" className="w-full justify-start" onClick={() => onExport(cv, 'docx')}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export as DOCX
+                </Button>
+                <Button variant="outline" className="w-full justify-start" onClick={() => onExport(cv, 'jpg')}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export as JPG
+                </Button>
+              </div>
               <Separator />
               <div className="space-y-1">
                 {tabItems.map(tab => (

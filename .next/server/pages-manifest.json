@@ -2,8 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/my-cvs": "pages/my-cvs.js",
-  "/builder": "pages/builder.js",
-  "/blog": "pages/blog.js"
+  "/builder": "pages/builder.js"
 }

@@ -13,11 +13,12 @@ import {
 import { Button } from '@/components/ui/button';
 import { CV } from '@/data/cvData';
 import { formatDate } from '@/lib/utils';
+import { ExportFormat } from '@/types/exportTypes';
 
 interface CVPreviewProps {
   cv: CV;
   onBack: () => void;
-  onExport: (format: string) => void;
+  onExport: (format: ExportFormat) => Promise<void>;
 }
 
 export const CVPreview: React.FC<CVPreviewProps> = ({ cv, onBack, onExport }) => {
@@ -28,13 +29,20 @@ export const CVPreview: React.FC<CVPreviewProps> = ({ cv, onBack, onExport }) =>
           <Button variant="ghost" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
-          </Button>
-          <h1 className="text-2xl font-bold ml-4">{cv.name}</h1>
+          </Button>          <h1 className="text-2xl font-bold ml-4">{cv.name}</h1>
         </div>
         <div className="flex space-x-2">
           <Button onClick={() => onExport('pdf')}>
             <Download className="h-4 w-4 mr-2" />
             Download PDF
+          </Button>
+          <Button variant="outline" onClick={() => onExport('docx')}>
+            <Download className="h-4 w-4 mr-2" />
+            Download DOCX
+          </Button>
+          <Button variant="outline" onClick={() => onExport('jpg')}>
+            <Download className="h-4 w-4 mr-2" />
+            Download JPG
           </Button>
         </div>
       </div>

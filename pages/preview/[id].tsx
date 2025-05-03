@@ -7,6 +7,13 @@ import { ArrowLeft, Download, Edit, Share2 } from 'lucide-react';
 import { CV, sampleCV } from '@/data/cvData';
 import { CVPreview } from '@/components/CVPreview';
 import { downloadCV } from '@/lib/cvUtils';
+import { ExportFormat } from '@/types/exportTypes';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 
 export default function CVPreviewPage() {
   const router = useRouter();
@@ -25,19 +32,27 @@ export default function CVPreviewPage() {
 
   const handleBack = () => {
     router.back();
-  };
-
-  const handleEdit = () => {
+  };  const handleEdit = () => {
     if (cv) {
       router.push(`/builder?mode=edit&id=${cv.id}`);
     }
   };
 
-  const handleDownload = () => {
+  const handleDownload = async (format: ExportFormat = 'pdf') => {
     if (cv) {
-      downloadCV(cv, 'pdf');
+      try {
+        await downloadCV(cv, format);
+      } catch (error) {
+        console.error('Error downloading CV:', error);
+        alert('There was an error downloading your CV. Please try again.');
+      }
     }
   };
+
+  // Button click handlers for each format
+  const handleDownloadPDF = () => cv && downloadCV(cv, 'pdf');
+  const handleDownloadDOCX = () => cv && downloadCV(cv, 'docx');
+  const handleDownloadJPG = () => cv && downloadCV(cv, 'jpg');
 
   const handleShare = () => {
     // For demonstration purposes only - in a real app, you might implement
@@ -92,22 +107,19 @@ export default function CVPreviewPage() {
             <Button variant="outline" onClick={handleEdit}>
               <Edit className="h-4 w-4 mr-2" />
               Edit
-            </Button>
-            <Button variant="outline" onClick={handleShare}>
+            </Button>            <Button variant="outline" onClick={handleShare}>
               <Share2 className="h-4 w-4 mr-2" />
               Share
             </Button>
-            <Button onClick={handleDownload}>
+            <Button onClick={() => cv && downloadCV(cv, 'pdf')}>
               <Download className="h-4 w-4 mr-2" />
               Download
             </Button>
           </div>
-        </div>
-
-        <CVPreview 
+        </div>        <CVPreview 
           cv={cv} 
           onBack={handleBack}
-          onExport={handleDownload}
+          onExport={async (format: ExportFormat) => cv && await downloadCV(cv, format)}
         />
       </div>
     </div>

@@ -22,20 +22,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/blog": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/blog.js"
-    ],
     "/builder": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/builder.js"
-    ],
-    "/my-cvs": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/my-cvs.js"
     ]
   },
   "ampFirstPages": []
