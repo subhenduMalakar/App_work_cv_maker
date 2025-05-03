@@ -1,0 +1,13 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/builder": "pages/builder.js",
+  "/templates": "pages/templates.js",
+  "/my-cvs": "pages/my-cvs.js",
+  "/favorites": "pages/favorites.js",
+  "/": "pages/index.js",
+  "/blog": "pages/blog.js",
+  "/about": "pages/about.js",
+  "/auth": "pages/auth.js"
+}

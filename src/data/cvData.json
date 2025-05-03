@@ -1,0 +1,217 @@
+[
+  {
+    "id": "sample-cv-1",
+    "userId": "sample-user",
+    "name": "Professional CV",
+    "template": "Professional",
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z",
+    "personalInfo": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "title": "Software Engineer",
+      "email": "john.doe@example.com",
+      "phone": "(123) 456-7890",
+      "address": "123 Main St",
+      "city": "San Francisco",
+      "country": "USA",
+      "postalCode": "94105",
+      "website": "johndoe.dev",
+      "linkedin": "linkedin.com/in/johndoe",
+      "github": "github.com/johndoe",
+      "summary": "Experienced software engineer with a passion for building scalable applications and solving complex problems."
+    },
+    "education": [
+      {
+        "id": "ed-1",
+        "institution": "Stanford University",
+        "degree": "Master of Science",
+        "field": "Computer Science",
+        "startDate": "2020-09-01",
+        "endDate": "2022-06-01",
+        "description": "Specialized in Artificial Intelligence and Machine Learning",
+        "location": "Stanford, CA",
+        "gpa": "3.9/4.0"
+      },
+      {
+        "id": "ed-2",
+        "institution": "University of California, Berkeley",
+        "degree": "Bachelor of Science",
+        "field": "Computer Science",
+        "startDate": "2016-09-01",
+        "endDate": "2020-05-01",
+        "description": "Dean's List, Computer Science Student Association",
+        "location": "Berkeley, CA",
+        "gpa": "3.8/4.0"
+      }
+    ],
+    "experience": [
+      {
+        "id": "exp-1",
+        "company": "Tech Innovations Inc.",
+        "position": "Senior Software Engineer",
+        "startDate": "2022-07-01",
+        "endDate": "",
+        "description": "Lead the development of microservices architecture for the company's flagship product.",
+        "location": "San Francisco, CA",
+        "achievements": [
+          "Reduced API response time by 40% through code optimization",
+          "Implemented CI/CD pipeline reducing deployment time by 60%",
+          "Mentored 5 junior developers"
+        ],
+        "isCurrent": true
+      },
+      {
+        "id": "exp-2",
+        "company": "Global Systems Inc.",
+        "position": "Software Engineer",
+        "startDate": "2020-06-01",
+        "endDate": "2022-06-30",
+        "description": "Developed and maintained RESTful APIs and web applications using Node.js and React.",
+        "location": "San Jose, CA",
+        "achievements": [
+          "Developed a real-time analytics dashboard that increased efficiency by 25%",
+          "Refactored legacy codebase reducing technical debt by 30%"
+        ]
+      }
+    ],
+    "skills": [
+      { "id": "skill-1", "name": "JavaScript", "level": 5, "category": "Programming Languages" },
+      { "id": "skill-2", "name": "TypeScript", "level": 4, "category": "Programming Languages" },
+      { "id": "skill-3", "name": "React", "level": 5, "category": "Frontend" },
+      { "id": "skill-4", "name": "Node.js", "level": 4, "category": "Backend" },
+      { "id": "skill-5", "name": "AWS", "level": 3, "category": "Cloud" },
+      { "id": "skill-6", "name": "Docker", "level": 4, "category": "DevOps" },
+      { "id": "skill-7", "name": "Kubernetes", "level": 3, "category": "DevOps" },
+      { "id": "skill-8", "name": "GraphQL", "level": 4, "category": "API" }
+    ],
+    "languages": [
+      { "id": "lang-1", "name": "English", "proficiency": "Native/Bilingual" },
+      { "id": "lang-2", "name": "Spanish", "proficiency": "Professional Working" }
+    ],
+    "certificates": [
+      {
+        "id": "cert-1",
+        "name": "AWS Certified Solutions Architect",
+        "issuer": "Amazon Web Services",
+        "date": "2023-01-15",
+        "url": "https://aws.amazon.com/certification/",
+        "description": "Professional level certification for AWS architecture best practices"
+      }
+    ],
+    "projects": [
+      {
+        "id": "proj-1",
+        "name": "E-commerce Platform",
+        "description": "Built a scalable e-commerce platform with React, Node.js, and MongoDB",
+        "startDate": "2022-01-01",
+        "endDate": "2022-06-30",
+        "url": "https://github.com/johndoe/ecommerce",
+        "technologies": ["React", "Node.js", "MongoDB", "Redis", "AWS"]
+      }
+    ],
+    "references": [
+      {
+        "id": "ref-1",
+        "name": "Jane Smith",
+        "company": "Tech Innovations Inc.",
+        "position": "CTO",
+        "email": "jane.smith@example.com",
+        "phone": "(123) 456-7899",
+        "relation": "Direct Manager"
+      }
+    ]
+  },
+  {
+    "id": "sample-cv-2",
+    "userId": "sample-user",
+    "name": "Creative Design CV",
+    "template": "Creative",
+    "createdAt": "2025-01-05T00:00:00.000Z",
+    "updatedAt": "2025-01-05T00:00:00.000Z",
+    "personalInfo": {
+      "firstName": "Sarah",
+      "lastName": "Johnson",
+      "title": "UI/UX Designer",
+      "email": "sarah.johnson@example.com",
+      "phone": "(123) 456-7891",
+      "city": "New York",
+      "country": "USA",
+      "website": "sarahjohnson.design",
+      "linkedin": "linkedin.com/in/sarahjohnson",
+      "summary": "Creative UI/UX designer with 5+ years of experience in crafting intuitive digital experiences."
+    },
+    "education": [
+      {
+        "id": "ed-1",
+        "institution": "Rhode Island School of Design",
+        "degree": "Bachelor of Fine Arts",
+        "field": "Graphic Design",
+        "startDate": "2015-09-01",
+        "endDate": "2019-05-01",
+        "description": "Graduated with honors, Design Excellence Award recipient",
+        "location": "Providence, RI"
+      }
+    ],
+    "experience": [
+      {
+        "id": "exp-1",
+        "company": "Creative Solutions Agency",
+        "position": "Senior UI/UX Designer",
+        "startDate": "2021-03-01",
+        "endDate": "",
+        "description": "Lead designer for mobile and web applications across various industries.",
+        "location": "New York, NY",
+        "achievements": [
+          "Redesigned flagship product increasing user engagement by 35%",
+          "Led a team of 3 junior designers"
+        ],
+        "isCurrent": true
+      },
+      {
+        "id": "exp-2",
+        "company": "Digital Innovations",
+        "position": "UI Designer",
+        "startDate": "2019-06-01",
+        "endDate": "2021-02-28",
+        "description": "Created user interfaces for web and mobile applications.",
+        "location": "Boston, MA",
+        "achievements": [
+          "Designed UI components for 12+ client projects",
+          "Implemented design system improving team efficiency by 40%"
+        ]
+      }
+    ],
+    "skills": [
+      { "id": "skill-1", "name": "UI Design", "level": 5, "category": "Design" },
+      { "id": "skill-2", "name": "UX Design", "level": 5, "category": "Design" },
+      { "id": "skill-3", "name": "Figma", "level": 5, "category": "Tools" },
+      { "id": "skill-4", "name": "Adobe Creative Suite", "level": 4, "category": "Tools" },
+      { "id": "skill-5", "name": "Prototyping", "level": 4, "category": "Design" },
+      { "id": "skill-6", "name": "HTML/CSS", "level": 3, "category": "Development" }
+    ],
+    "languages": [
+      { "id": "lang-1", "name": "English", "proficiency": "Native/Bilingual" },
+      { "id": "lang-2", "name": "French", "proficiency": "Limited Working" }
+    ],
+    "certificates": [
+      {
+        "id": "cert-1",
+        "name": "Google UX Design Professional Certificate",
+        "issuer": "Google",
+        "date": "2022-05-10"
+      }
+    ],
+    "projects": [
+      {
+        "id": "proj-1",
+        "name": "E-commerce Mobile App",
+        "description": "Redesigned the UI for a major e-commerce mobile application",
+        "startDate": "2023-01-01",
+        "endDate": "2023-03-30",
+        "url": "https://behance.net/sarahjohnson"
+      }
+    ],
+    "references": []
+  }
+]
